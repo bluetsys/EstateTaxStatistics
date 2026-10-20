@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>상속세 신고·결정 현황 | 2006–2025</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .github-fork-ribbon.fixed:before {
+      background-color: #333 !important;
+    }
+  </style>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+</head>
+
+<body>
+  <a target="_blank" class="github-fork-ribbon fixed" href="https://github.com/bluetsys/EstateTaxStatistics"
+    data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+  <main class="wrap">
+    <div class="hero">
+      <div><span class="pill">국세청 국세통계 · KOSIS</span>
+        <h1>상속세·사망자수 통합 심층 분석 리포트</h1>
+        <div class="muted">연도별 총상속재산가액·과세표준·세액 · 피상속인 1인당 평균</div>
+      </div>
+      <div class="filters"><label class="control">연도 선택<select id="year"></select></label><label class="control">분석
+          유형<select id="mode">
+            <option value="both">신고 + 결정</option>
+            <option value="신고">신고만</option>
+            <option value="결정">결정만</option>
+          </select></label></div>
+    </div>
+    <div class="cards" id="cards"></div>
+    <section class="panel" id="mortalitySection">
+      <div class="controls-row">
+        <div>
+          <h2 style="margin:0">사망자 대비 상속세 통계 심층 비교</h2>
+          <p class="muted">국가데이터처 인구동향조사 · 국세청 국세통계 연계 분석</p>
+        </div><label class="control">시각화 지표<select id="mortalityMetric">
+            <option value="rate">사망자 대비 신고·결정 인원</option>
+            <option value="persons">사망자·신고·결정 인원</option>
+            <option value="crude">조사망률</option>
+            <option value="life">기대수명 (전체·남·여)</option>
+            <option value="relative">2007년 기준 인구·상속세 지수</option>
+          </select></label>
+      </div>
+      <div class="cards" id="mortalityCards"></div>
+      <div class="grid2">
+        <div>
+          <h3>연도별 변화</h3>
+          <div id="mortalityPlot"></div>
+        </div>
+        <div>
+          <h3>선택 연도 해설</h3>
+          <div id="mortalityNarrative" class="narrative"></div>
+        </div>
+      </div>
+      <div id="mortalityTable" style="overflow-x:auto;margin-top:18px"></div>
+      <div class="help"><strong>비율의 정의 및 주의사항</strong>
+        <div>사망자 대비 신고(결정) 인원 비율 = 해당 연도 상속세 신고(결정) 피상속인수 ÷ 해당 연도 전체 사망자수 × 100. 이것은 <b>같은 연도의 집계 건수 비율</b>이며 실제
+          사망자 가운데 상속세 신고·과세된 사람의 정확한 비율이 아닙니다. 신고와 결정은 사망 발생 시점과 신고·결정 시차, 경정 등이 달라 연도별 모집단이 일치하지 않을 수 있습니다.
+          상속세 피상속인수는 상속인 수와 다릅니다. 조사망률은 인구 1천 명당 사망자수로 연령구조 변화를 포함하며, 기대수명은 해당 연도 출생시 기대여명입니다. 2025년 기대수명은
+          원자료에서 미제공입니다.</div>
+      </div>
+      <p class="muted" style="font-size:12px">출처: <a
+          href="https://kosis.kr/statHtml/statHtml.do?orgId=101&amp;tblId=INH_1B8000F_02&amp;conn_path=I2"
+          target="_blank" rel="noopener">국가데이터처 「인구동향조사」 사망자수·조사망률·기대수명</a> · <a
+          href="https://kosis.kr/statHtml/statHtml.do?orgId=133&amp;tblId=DT_133N_612&amp;conn_path=I2" target="_blank"
+          rel="noopener">상속세 신고</a> · <a
+          href="https://kosis.kr/statHtml/statHtml.do?orgId=133&amp;tblId=DT_133N_622&amp;conn_path=I2" target="_blank"
+          rel="noopener">상속세 결정</a></p>
+    </section>
+    <section class="panel insight-panel">
+      <div class="controls-row">
+        <h2 style="margin:0">데이터가 말하는 핵심 변화</h2><label class="control">분석 기준<select id="insightType">
+            <option value="신고">신고</option>
+            <option value="결정">결정</option>
+          </select></label>
+      </div>
+      <div class="insight-cards" id="insightCards"></div>
+      <div id="narrative" class="narrative"></div>
+    </section>
+    <div class="grid2">
+      <section class="panel">
+        <h2>전년 대비 증감 원인 분해</h2>
+        <p class="muted" style="font-size:12px">총재산 변화를 인원 수 변화와 1인당 평균 변화로 분리합니다. 교차항은 평균 변화에 포함한 정확한 항등식입니다.
+        </p>
+        <div id="decomposition"></div>
+      </section>
+      <section class="panel">
+        <h2>고액 상속 집중도 분석</h2>
+        <p class="muted" style="font-size:12px">재산 규모 20억 원 초과 구간의 인원 비중과 재산 집중도를 비교합니다.</p>
+        <div id="concentration"></div>
+      </section>
+    </div>
+    <div class="grid2">
+      <section class="panel">
+        <h2>연도별 증감률·구조 변화</h2><label class="control">분석 지표<select id="growthKey">
+            <option value="피상속인수">피상속인수</option>
+            <option value="총상속재산가액">총상속재산</option>
+            <option value="과세표준">과세표준</option>
+            <option value="per">1인당 평균 재산</option>
+          </select></label>
+        <div id="growthChart" class="chart"></div>
+      </section>
+      <section class="panel">
+        <h2>장기 비교 및 극값</h2>
+        <div id="longTerm"></div>
+      </section>
+    </div>
+    <div class="grid2">
+      <section class="panel">
+        <h2>연도별 추세</h2>
+        <div class="controls-row"><label class="control">추세 지표<select id="trendMetric"></select></label><span
+            class="legend"><i class="dot"></i> 신고 <b></b><i class="dot dec"></i> 결정</span></div>
+        <div class="chart" id="trend"></div>
+      </section>
+      <section class="panel">
+        <h2>선택 연도 신고·결정 비교</h2>
+        <div id="compare"></div>
+      </section>
+    </div>
+    <div class="grid2">
+      <section class="panel">
+        <h2>총상속재산 규모별 분포</h2>
+        <div class="controls-row"><label class="control">표시 지표<select id="groupMetric">
+              <option value="피상속인수">피상속인수</option>
+              <option value="총상속재산가액">총상속재산가액</option>
+              <option value="과세표준">과세표준</option>
+              <option value="산출세액">산출세액</option>
+              <option value="per">1인당 평균 총상속재산</option>
+            </select></label><label class="control">대상<select id="groupMode">
+              <option value="신고">신고</option>
+              <option value="결정">결정</option>
+            </select></label></div>
+        <div id="distribution"></div>
+      </section>
+      <section class="panel">
+        <h2>과세표준 규모별 분포</h2>
+        <div class="controls-row"><label class="control">표시 지표<select id="taxMetric">
+              <option value="피상속인수">피상속인수</option>
+              <option value="과세표준">과세표준</option>
+              <option value="산출세액">산출세액</option>
+              <option value="per">1인당 평균 과세표준</option>
+            </select></label><label class="control">대상<select id="taxMode">
+              <option value="신고">신고</option>
+              <option value="결정">결정</option>
+            </select></label></div>
+        <div id="taxDistribution"></div>
+      </section>
+    </div>
+    <section class="panel">
+      <div class="controls-row">
+        <h2 style="margin:0">상세 통계 데이터</h2>
+        <div class="filters"><label class="control">데이터<select id="tableMode">
+              <option value="신고">신고</option>
+              <option value="결정">결정</option>
+            </select></label><label class="control">구분<select id="tableGroup">
+              <option value="all">전체</option>
+              <option value="총상속재산가액등규모별">총상속재산 규모별</option>
+              <option value="과세표준규모별">과세표준 규모별</option>
+            </select></label><label class="control">검색<input id="search" placeholder="항목 검색"></label><button
+            id="export">표 CSV 다운로드</button></div>
+      </div>
+      <p class="muted" style="font-size:12px" id="tableCaption"></p>
+      <div class="tableouter">
+        <table>
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </section>
+    <div class="help"><strong>해석 및 산식 안내</strong>
+      <div>• 1인당 평균 = 해당 구분의 금액(백만원) ÷ 피상속인수(명). 화면에서는 억 원 단위로 표시합니다.</div>
+      <div>• 이는 상속인 개인의 실수령액이나 실제 납부세액이 아닌 <b>피상속인 1명당 평균</b>입니다.</div>
+      <div>• 신고와 결정은 동일 사건을 1:1로 연결한 통계가 아니므로 차이를 과세당국의 증감액으로 단정할 수 없습니다.</div>
+      <div>• 원자료의 ‘-’는 미공표·해당 없음 등으로 취급하여 0으로 바꾸지 않았습니다. 과거 연도는 공개 지표 구성이 서로 다를 수 있습니다.</div>
+      <div>• 결정 통계의 총결정세액, 신고 통계의 자진납부할세액은 성격이 달라 같은 세액으로 직접 비교하지 않습니다.</div>
+    </div>
+    <div class="footer"><strong>자료 출처 (KOSIS)</strong><br>
+      ① 국세청 「국세통계」, <a target="_blank" rel="noopener"
+        href="https://kosis.kr/statHtml/statHtml.do?orgId=133&amp;tblId=DT_133N_612&amp;conn_path=I2">6.1.2 상속세
+        신고 현황Ⅱ(총상속재산가액 등, 과세표준) [2006~]</a><br>
+      ② 국세청 「국세통계」, <a target="_blank" rel="noopener"
+        href="https://kosis.kr/statHtml/statHtml.do?orgId=133&amp;tblId=DT_133N_622&amp;conn_path=I2">6.2.2 상속세
+        결정 현황Ⅱ(총상속재산가액 등, 과세표준) [2007~]</a><br>
+      ③ 국가데이터처 「인구동향조사」, <a target="_blank" rel="noopener"
+        href="https://kosis.kr/statHtml/statHtml.do?orgId=101&amp;tblId=INH_1B8000F_02&amp;conn_path=I2">사망자수,
+        조사망률, 기대수명</a><br>
+      자료 조회·다운로드일: 2026.10.20<br>제공된 2026.10.20 다운로드 CSV 기반 · 데이터 내장형 오프라인 HTML · 원자료 금액 단위: 백만원</div>
+  </main>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
